@@ -7,4 +7,6 @@
     <string name="Add_Transaction">Tambah Transaksi</string>
     <string name="No_transaction_data">Tidak ada data transaksi</string>
     <string name="Total_Balance">Total Uang: %1$d</string>
+
+    <string name="Back">Kembali</string>
 </resources>

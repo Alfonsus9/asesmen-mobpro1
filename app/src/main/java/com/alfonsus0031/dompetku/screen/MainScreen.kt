@@ -31,12 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.alfonsus0031.dompetku.Model.Transaksi
 import com.alfonsus0031.dompetku.R
+import com.alfonsus0031.dompetku.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen (transaksiList: SnapshotStateList<Transaksi>) {
+fun MainScreen (navController: NavHostController, transaksiList: SnapshotStateList<Transaksi>) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -63,7 +65,9 @@ fun MainScreen (transaksiList: SnapshotStateList<Transaksi>) {
         ScreenContent (
             innerPadding = innerPadding,
             transaksiList = transaksiList,
-            onTambahClick = {}
+            pindahLayar = {
+                navController.navigate(Screen.Form.route)
+            }
         )
     }
 }
@@ -72,7 +76,7 @@ fun MainScreen (transaksiList: SnapshotStateList<Transaksi>) {
 fun ScreenContent(
     innerPadding: PaddingValues,
     transaksiList: List<Transaksi>,
-    onTambahClick: () -> Unit
+    pindahLayar: () -> Unit
 ) {
 
     val totalPemasukkan = transaksiList
@@ -112,7 +116,9 @@ fun ScreenContent(
 
 
             Button(
-                onClick = onTambahClick,
+                onClick = {
+                     pindahLayar()
+                },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = stringResource(R.string.Add_Transaction))

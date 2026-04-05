@@ -7,6 +7,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.alfonsus0031.dompetku.Model.Transaksi
+import com.alfonsus0031.dompetku.screen.FormScreen
 import com.alfonsus0031.dompetku.screen.MainScreen
 
 @Composable
@@ -19,7 +20,11 @@ fun SetupNavGraph(
         startDestination = Screen.Home.route
     ) {
         composable(route = Screen.Home.route) {
-            MainScreen(transaksiList = transaksiList)
+            MainScreen(navController, transaksiList = transaksiList)
+        }
+
+        composable(route = Screen.Form.route) {
+            FormScreen(navController)
         }
     }
 }

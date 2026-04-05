@@ -6,4 +6,6 @@
     <string name="Add_Transaction">Add Transaction</string>
     <string name="No_transaction_data">No transaction data</string>
     <string name="Total_Balance">Total Balance: %1$d</string>
+
+    <string name="Back">Back</string>
 </resources>
