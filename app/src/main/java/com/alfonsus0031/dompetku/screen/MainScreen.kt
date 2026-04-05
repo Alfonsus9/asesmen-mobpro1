@@ -1,5 +1,7 @@
 package com.alfonsus0031.dompetku.screen
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +30,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -79,6 +82,8 @@ fun ScreenContent(
     pindahLayar: () -> Unit
 ) {
 
+    val context = LocalContext.current
+
     val totalPemasukkan = transaksiList
         .filter { it.tipe == "pemasukan" }
         .sumOf { it.nominal }
@@ -114,6 +119,28 @@ fun ScreenContent(
 
             Spacer(modifier = Modifier.height(12.dp))
 
+            Text(
+                text = stringResource(R.string.Income_main, totalUang),
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Medium
+            )
+
+            Text(
+                text = stringResource(R.string.Expense_main, totalPengeluaran),
+                color = MaterialTheme.colorScheme.error,
+                fontWeight = FontWeight.Medium
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            val message = stringResource(R.string.laporan_keuangan_template, totalUang, totalPemasukkan, totalPengeluaran)
+
+            Button(
+                onClick = { shareData(context, message) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(text = stringResource(R.string.Share))
+            }
 
             Button(
                 onClick = {
@@ -186,5 +213,15 @@ fun TransaksiItem(transaksi: Transaksi) {
             Text("Rp ${transaksi.nominal}")
             Text(transaksi.tanggal)
         }
+    }
+}
+
+private fun shareData(context: Context, message: String) {
+    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, message)
+    }
+    if (shareIntent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(shareIntent)
     }
 }

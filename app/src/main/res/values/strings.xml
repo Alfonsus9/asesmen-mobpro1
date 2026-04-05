@@ -3,9 +3,14 @@
     <string name="MainScreen_description">Transaction</string>
     <string name="Income">Income</string>
     <string name="Expense">Expense</string>
+    <string name="Income_main">Income: %1$d</string>
+    <string name="Expense_main">Expense: %1$d</string>
     <string name="Add_Transaction">Add Transaction</string>
     <string name="No_transaction_data">No transaction data</string>
     <string name="Total_Balance">Total Balance: %1$d</string>
+
+    <string name="Share">Share</string>
+    <string name="laporan_keuangan_template">Total balance: %1$s\nIncome: %2$s\nExpenses: %3$s</string>
 
     <string name="Back">Back</string>
     <string name="Nominal">Nominal</string>

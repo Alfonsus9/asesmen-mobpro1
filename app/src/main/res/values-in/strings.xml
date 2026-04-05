@@ -4,10 +4,14 @@
     <string name="MainScreen_description">Transaksi</string>
     <string name="Income">Pemasukan</string>
     <string name="Expense">Pengeluaran</string>
+    <string name="Income_main">Pemasukan: %1$d</string>
+    <string name="Expense_main">Pengeluaran: %1$d</string>
     <string name="Add_Transaction">Tambah Transaksi</string>
     <string name="No_transaction_data">Tidak ada data transaksi</string>
     <string name="Total_Balance">Total Uang: %1$d</string>
 
+    <string name="Share">Bagikan</string>
+    <string name="laporan_keuangan_template">Total uang: %1$s\nPemasukkan: %2$s\nPengeluaran: %3$s</string>
     <string name="Back">Kembali</string>
     <string name="Nominal">Nominal</string>
     <string name="Information">Keterangan</string>
