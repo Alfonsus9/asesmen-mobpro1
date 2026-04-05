@@ -53,7 +53,7 @@ fun MainScreen (navController: NavHostController, transaksiList: SnapshotStateLi
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
                 actions = {
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {navController.navigate(Screen.About.route)}) {
                         Icon(
                             imageVector = Icons.Outlined.Info,
                             contentDescription = stringResource(R.string.app_name),
