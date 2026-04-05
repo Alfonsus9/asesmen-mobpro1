@@ -16,6 +16,8 @@
     <string name="Nominal">Nominal</string>
     <string name="Information">Information</string>
     <string name="Input_invalid">Must not be empty</string>
+    <string name="Save">Save</string>
+    <string name="Choose_Date">Choose Date</string>
 
     <string name="About">About</string>
     <string name="About_des">A simple financial recording application to track income and expenses easily and quickly</string>

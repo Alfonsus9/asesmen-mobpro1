@@ -16,6 +16,8 @@
     <string name="Nominal">Nominal</string>
     <string name="Information">Keterangan</string>
     <string name="Input_invalid">Tidak boleh kosong</string>
+    <string name="Save">Simpan</string>
+    <string name="Choose_Date">Pilih Tanggal</string>
 
     <string name="About">Tentang</string>
     <string name="About_des">Aplikasi pencatatan keuangan sederhana untuk mencatat pemasukan dan pengeluaran secara mudah dan cepat.</string>

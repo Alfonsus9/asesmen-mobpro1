@@ -13,6 +13,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,8 +23,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,6 +43,8 @@ import androidx.navigation.NavHostController
 import com.alfonsus0031.dompetku.Model.RadioOption
 import com.alfonsus0031.dompetku.Model.Transaksi
 import com.alfonsus0031.dompetku.R
+import com.alfonsus0031.dompetku.helper.convertMillisToDateString
+import androidx.compose.material.icons.filled.DateRange
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -86,6 +92,8 @@ fun ScreenContent(
     var judul by remember { mutableStateOf("") }
     var nominal by remember { mutableStateOf("") }
     var tipe by remember { mutableStateOf("pemasukan") }
+
+    var showModal by remember { mutableStateOf(false) }
     var tanggal by remember { mutableStateOf("") }
 
     var judulError by remember { mutableStateOf(false) }
@@ -153,14 +161,32 @@ fun ScreenContent(
 
         OutlinedTextField(
             value = tanggal,
-            onValueChange = { tanggal = it },
-            label = { Text("Tanggal (yyyy-MM-dd)") },
-            trailingIcon = { IconPicker(tanggalError, "date") },
+            onValueChange = { },
+            label = { Text(text = stringResource(R.string.Choose_Date)) },
             supportingText = { ErrorHint(tanggalError) },
             isError = tanggalError,
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("2026-04-05") }
+            readOnly = true,
+            trailingIcon = {
+                IconButton(onClick = { showModal = true }) {
+                    Icon(
+                        imageVector = Icons.Default.DateRange,
+                        contentDescription = null
+                    )
+                }
+            },
+            modifier = Modifier.fillMaxWidth()
         )
+
+        if (showModal) {
+            DatePickerModal(
+                onDateSelected = { millis ->
+                    if (millis != null) {
+                        tanggal = convertMillisToDateString(millis)
+                    }
+                },
+                onDismiss = { showModal = false }
+            )
+        }
 
         Button(
             onClick = {
@@ -168,7 +194,7 @@ fun ScreenContent(
 
                 judulError = judul.isBlank()
                 nominalError = nominalValue == null || nominalValue <= 0
-                tanggalError = tanggal.isBlank()
+                tanggalError = tanggal.isEmpty()
 
                 if (judulError || nominalError || tanggalError) {
                     return@Button
@@ -189,7 +215,7 @@ fun ScreenContent(
                 .padding(top = 8.dp),
             shape = MaterialTheme.shapes.medium
         ) {
-            Text("Simpan")
+            Text(text = stringResource(R.string.Save))
         }
     }
 }
@@ -225,3 +251,29 @@ fun ErrorHint(isError: Boolean) {
     }
 }
 
+@Composable
+fun DatePickerModal(
+    onDateSelected: (Long?) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val datePickerState = rememberDatePickerState()
+
+    DatePickerDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = {
+                onDateSelected(datePickerState.selectedDateMillis)
+                onDismiss()
+            }) {
+                Text("OK")
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text("Cancel")
+            }
+        }
+    ) {
+        DatePicker(state = datePickerState)
+    }
+}
