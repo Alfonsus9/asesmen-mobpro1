@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DompetKu</string>
+    <string name="MainScreen_description">Transaksi</string>
+    <string name="Income">Pemasukkan</string>
+    <string name="Expense">Pengeluaran</string>
+    <string name="Add_Transaction">Tambah Transaksi</string>
+    <string name="No_transaction_data">Tidak ada data transaksi</string>
+    <string name="Total_Balance">Total Uang: %1$d</string>
+</resources>
