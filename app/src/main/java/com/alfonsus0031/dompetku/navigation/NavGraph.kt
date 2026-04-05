@@ -24,7 +24,7 @@ fun SetupNavGraph(
         }
 
         composable(route = Screen.Form.route) {
-            FormScreen(navController)
+            FormScreen(navController, transaksiList = transaksiList)
         }
     }
 }

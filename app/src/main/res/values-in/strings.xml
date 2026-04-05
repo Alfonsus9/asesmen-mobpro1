@@ -2,11 +2,14 @@
 <resources>
     <string name="app_name">DompetKu</string>
     <string name="MainScreen_description">Transaksi</string>
-    <string name="Income">Pemasukkan</string>
+    <string name="Income">Pemasukan</string>
     <string name="Expense">Pengeluaran</string>
     <string name="Add_Transaction">Tambah Transaksi</string>
     <string name="No_transaction_data">Tidak ada data transaksi</string>
     <string name="Total_Balance">Total Uang: %1$d</string>
 
     <string name="Back">Kembali</string>
+    <string name="Nominal">Nominal</string>
+    <string name="Information">Keterangan</string>
+    <string name="Input_invalid">Tidak boleh kosong</string>
 </resources>

@@ -8,4 +8,7 @@
     <string name="Total_Balance">Total Balance: %1$d</string>
 
     <string name="Back">Back</string>
+    <string name="Nominal">Nominal</string>
+    <string name="Information">Information</string>
+    <string name="Input_invalid">Must not be empty</string>
 </resources>
