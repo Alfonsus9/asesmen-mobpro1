@@ -120,7 +120,7 @@ fun ScreenContent(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = stringResource(R.string.Income_main, totalUang),
+                text = stringResource(R.string.Income_main, totalPemasukkan),
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Medium
             )
