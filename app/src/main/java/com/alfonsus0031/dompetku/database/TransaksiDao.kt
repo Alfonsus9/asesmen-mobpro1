@@ -16,10 +16,10 @@ interface TransaksiDao {
     suspend fun update(transaksi: Transaksi)
 
     @Query("SELECT * FROM transaksi ORDER BY tanggal DESC")
-    fun getCatatan(): Flow<List<Transaksi>>
+    fun getTransaksi(): Flow<List<Transaksi>>
 
     @Query("SELECT * FROM transaksi WHERE id = :id")
-    suspend fun getCatatanById(id: Long): Transaksi?
+    suspend fun getTransaksiById(id: Long): Transaksi?
 
     @Query("DELETE FROM transaksi WHERE id = :id")
     suspend fun deleteById(id: Long)

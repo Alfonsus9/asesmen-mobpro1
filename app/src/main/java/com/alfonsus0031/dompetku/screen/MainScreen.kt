@@ -30,6 +30,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,6 +43,7 @@ import androidx.navigation.NavHostController
 import com.alfonsus0031.dompetku.Model.Transaksi
 import com.alfonsus0031.dompetku.R
 import com.alfonsus0031.dompetku.navigation.Screen
+import com.alfonsus0031.dompetku.util.ViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -91,10 +94,11 @@ fun MainScreen (navController: NavHostController) {
 fun ScreenContent(
     innerPadding: PaddingValues,
 ) {
-
-    val viewModel: MainViewModel = viewModel()
-    val transaksiList = viewModel.data
     val context = LocalContext.current
+    val factory = ViewModelFactory(context)
+    val viewModel: MainViewModel = viewModel(factory = factory)
+    val transaksiList by viewModel.data.collectAsState()
+
 
     val totalPemasukkan = transaksiList
         .filter { it.tipe == "pemasukan" }
