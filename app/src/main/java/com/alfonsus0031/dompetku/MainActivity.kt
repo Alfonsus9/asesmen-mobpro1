@@ -11,14 +11,13 @@ import com.alfonsus0031.dompetku.navigation.SetupNavGraph
 import com.alfonsus0031.dompetku.ui.theme.DompetKuTheme
 
 class MainActivity : ComponentActivity() {
-    val transaksiList = mutableStateListOf<Transaksi>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             DompetKuTheme {
-                SetupNavGraph(rememberNavController(), transaksiList)
+                SetupNavGraph(rememberNavController())
             }
         }
     }

@@ -13,8 +13,7 @@ import com.alfonsus0031.dompetku.screen.MainScreen
 
 @Composable
 fun SetupNavGraph(
-    navController: NavHostController = rememberNavController(),
-    transaksiList: SnapshotStateList<Transaksi>
+    navController: NavHostController = rememberNavController()
 ) {
     NavHost(
         navController = navController,
@@ -25,7 +24,7 @@ fun SetupNavGraph(
         }
 
         composable(route = Screen.Form.route) {
-            FormScreen(navController, transaksiList = transaksiList)
+            FormScreen(navController)
         }
 
         composable(route = Screen.About.route) {
