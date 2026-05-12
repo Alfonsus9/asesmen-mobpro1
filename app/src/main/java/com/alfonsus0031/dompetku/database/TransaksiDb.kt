@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.alfonsus0031.dompetku.Model.Transaksi
 
-@Database(entities = [Transaksi::class], version = 1, exportSchema = false)
+@Database(entities = [Transaksi::class], version = 2, exportSchema = false)
 abstract class TransaksiDb : RoomDatabase() {
 
     abstract val dao: TransaksiDao

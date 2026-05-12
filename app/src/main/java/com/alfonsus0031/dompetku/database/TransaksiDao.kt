@@ -15,12 +15,18 @@ interface TransaksiDao {
     @Update
     suspend fun update(transaksi: Transaksi)
 
-    @Query("SELECT * FROM transaksi ORDER BY tanggal DESC")
+    @Query("SELECT * FROM transaksi WHERE is_Delete = 0 ORDER BY tanggal DESC")
     fun getTransaksi(): Flow<List<Transaksi>>
 
     @Query("SELECT * FROM transaksi WHERE id = :id")
     suspend fun getTransaksiById(id: Long): Transaksi?
 
-    @Query("DELETE FROM transaksi WHERE id = :id")
+    @Query("UPDATE transaksi SET is_Delete = 1 WHERE id = :id")
     suspend fun deleteById(id: Long)
+
+    @Query("UPDATE transaksi SET is_Delete = 0 WHERE id = :id")
+    suspend fun undoById(id: Long)
+
+    @Query("SELECT * FROM transaksi WHERE is_Delete = 1 ORDER BY tanggal DESC")
+    fun getDeletedTransaksi(): Flow<List<Transaksi>>
 }

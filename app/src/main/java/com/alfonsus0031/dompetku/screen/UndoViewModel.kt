@@ -9,17 +9,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class MainViewModel(private val dao: TransaksiDao) : ViewModel() {
+class UndoViewModel(private val dao: TransaksiDao) : ViewModel() {
 
-    val data: StateFlow<List<Transaksi>> = dao.getTransaksi().stateIn(
+    val data: StateFlow<List<Transaksi>> = dao.getDeletedTransaksi().stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(),
         initialValue = emptyList()
     )
 
-    fun deleteById(id: Long) {
+    fun undoById(id: Long) {
         viewModelScope.launch {
-            dao.deleteById(id)
+            dao.undoById(id)
         }
     }
+
 }

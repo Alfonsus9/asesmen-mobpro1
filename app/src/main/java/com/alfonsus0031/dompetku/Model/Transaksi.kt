@@ -10,5 +10,6 @@ data class Transaksi(
     val judul: String,
     val nominal: Int,
     val tipe: String,
-    val tanggal: String
+    val tanggal: String,
+    val is_Delete: Boolean = false
 )

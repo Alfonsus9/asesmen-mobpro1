@@ -21,6 +21,7 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -88,6 +89,13 @@ fun MainScreen (navController: NavHostController) {
                                 if (showList) R.string.grid
                                 else R.string.list
                             ),
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
+                    IconButton(onClick = { navController.navigate(Screen.Undo.route) }) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = stringResource(R.string.Trash),
                             tint = MaterialTheme.colorScheme.onPrimary
                         )
                     }
@@ -213,9 +221,15 @@ fun ScreenContent(
                     contentPadding = PaddingValues(bottom = 84.dp)
                 ) {
                     items(transaksiList) {
-                        TransaksiItem(transaksi = it) {
-                            navController.navigate(Screen.FormUbah.withId(it.id))
-                        }
+                        TransaksiItem(
+                            transaksi = it,
+                            onClick = {
+                                navController.navigate(Screen.FormUbah.withId(it.id))
+                            },
+                            onDelete = {
+                                viewModel.deleteById(it.id)
+                            }
+                        )
                         HorizontalDivider()
                     }
                 }
@@ -229,9 +243,14 @@ fun ScreenContent(
                     contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 84.dp)
                 ) {
                     items(transaksiList) {
-                        GridItem(transaksi = it) {
-                            navController.navigate(Screen.FormUbah.withId(it.id))
-                        }
+                        GridItem(transaksi = it,
+                            onClick = {
+                                navController.navigate(Screen.FormUbah.withId(it.id))
+                            },
+                            onDelete = {
+                                viewModel.deleteById(it.id)
+                            }
+                        )
                     }
                 }
             }
@@ -240,17 +259,24 @@ fun ScreenContent(
 }
 
 @Composable
-fun TransaksiItem(transaksi: Transaksi, onClick: () -> Unit) {
+fun TransaksiItem(
+    transaksi: Transaksi,
+    onClick: () -> Unit,
+    onDelete: () -> Unit
+) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
-            .padding(vertical = 8.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
 
-        Column {
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
             Text(
                 text = transaksi.judul,
                 maxLines = 2,
@@ -261,20 +287,19 @@ fun TransaksiItem(transaksi: Transaksi, onClick: () -> Unit) {
             val isIncome = transaksi.tipe == "pemasukan"
 
             Text(
-                text = if (isIncome)
-                    stringResource(R.string.Income)
-                else
-                    stringResource(R.string.Expense),
-
-                color = if (isIncome)
-                    MaterialTheme.colorScheme.primary
-                else
-                    MaterialTheme.colorScheme.error,
-
+                text =
+                    if (isIncome)
+                        stringResource(R.string.Income)
+                    else
+                        stringResource(R.string.Expense),
+                color =
+                    if (isIncome)
+                        MaterialTheme.colorScheme.primary
+                    else
+                        MaterialTheme.colorScheme.error,
                 fontWeight = FontWeight.Bold
             )
         }
-
         Column(
             horizontalAlignment = Alignment.End,
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -288,11 +313,26 @@ fun TransaksiItem(transaksi: Transaksi, onClick: () -> Unit) {
                 style = MaterialTheme.typography.bodySmall
             )
         }
+        IconButton(
+            onClick = {
+                onDelete()
+            }
+        ) {
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Delete",
+                tint = MaterialTheme.colorScheme.error
+            )
+        }
     }
 }
 
 @Composable
-fun GridItem(transaksi: Transaksi, onClick: () -> Unit) {
+fun GridItem(
+    transaksi: Transaksi,
+    onClick: () -> Unit,
+    onDelete: () -> Unit
+) {
     val isIncome = transaksi.tipe == "pemasukan"
 
     Card(
@@ -308,12 +348,26 @@ fun GridItem(transaksi: Transaksi, onClick: () -> Unit) {
             modifier = Modifier.padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            Text(
-                text = transaksi.judul,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                fontWeight = FontWeight.Bold
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = transaksi.judul,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(onClick = { onDelete() }) {
+                    Icon(
+                        imageVector = Icons.Default.Delete,
+                        contentDescription = "Delete",
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
 
             Text(
                 text = if (isIncome)

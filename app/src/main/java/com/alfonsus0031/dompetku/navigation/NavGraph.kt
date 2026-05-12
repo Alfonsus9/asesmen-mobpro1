@@ -12,6 +12,7 @@ import com.alfonsus0031.dompetku.Model.Transaksi
 import com.alfonsus0031.dompetku.screen.AboutScreen
 import com.alfonsus0031.dompetku.screen.FormScreen
 import com.alfonsus0031.dompetku.screen.MainScreen
+import com.alfonsus0031.dompetku.screen.UndoScreen
 
 @Composable
 fun SetupNavGraph(
@@ -41,6 +42,10 @@ fun SetupNavGraph(
 
         composable(route = Screen.About.route) {
             AboutScreen(navController)
+        }
+
+        composable(Screen.Undo.route) {
+            UndoScreen(navController = navController)
         }
     }
 }
