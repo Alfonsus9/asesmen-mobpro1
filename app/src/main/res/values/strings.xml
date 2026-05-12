@@ -21,4 +21,7 @@
 
     <string name="About">About</string>
     <string name="About_des">A simple financial recording application to track income and expenses easily and quickly</string>
+
+    <string name="list">List</string>
+    <string name="grid">List</string>
 </resources>

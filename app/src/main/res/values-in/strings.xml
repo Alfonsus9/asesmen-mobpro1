@@ -21,4 +21,7 @@
 
     <string name="About">Tentang</string>
     <string name="About_des">Aplikasi pencatatan keuangan sederhana untuk mencatat pemasukan dan pengeluaran secara mudah dan cepat.</string>
+
+    <string name="list">List</string>
+    <string name="grid">List</string>
 </resources>

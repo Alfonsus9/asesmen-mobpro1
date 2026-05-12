@@ -2,6 +2,7 @@ package com.alfonsus0031.dompetku.screen
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,10 +16,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
@@ -35,19 +42,27 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.alfonsus0031.dompetku.Model.Transaksi
 import com.alfonsus0031.dompetku.R
 import com.alfonsus0031.dompetku.navigation.Screen
+import com.alfonsus0031.dompetku.util.SettingsDataStore
 import com.alfonsus0031.dompetku.util.ViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen (navController: NavHostController) {
+    val dataStore = SettingsDataStore(LocalContext.current)
+    val showList by dataStore.layoutFlow.collectAsState(true)
     Scaffold(
         topBar = {
             TopAppBar(
@@ -59,6 +74,23 @@ fun MainScreen (navController: NavHostController) {
                     titleContentColor = MaterialTheme.colorScheme.onPrimary,
                 ),
                 actions = {
+                    IconButton(onClick = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            dataStore.saveLayout(!showList)
+                        }
+                    }) {
+                        Icon(
+                            painter = painterResource(
+                                if (showList) R.drawable.baseline_grid_view_24
+                                else R.drawable.baseline_view_list_24
+                            ),
+                            contentDescription = stringResource(
+                                if (showList) R.string.grid
+                                else R.string.list
+                            ),
+                            tint = MaterialTheme.colorScheme.onPrimary
+                        )
+                    }
                     IconButton(onClick = {navController.navigate(Screen.About.route)}) {
                         Icon(
                             imageVector = Icons.Outlined.Info,
@@ -85,6 +117,7 @@ fun MainScreen (navController: NavHostController) {
 
     ) { innerPadding ->
         ScreenContent (
+            showList,
             innerPadding = innerPadding,
             navController
         )
@@ -93,6 +126,7 @@ fun MainScreen (navController: NavHostController) {
 
 @Composable
 fun ScreenContent(
+    showList: Boolean,
     innerPadding: PaddingValues,
     navController: NavHostController
 ) {
@@ -162,34 +196,43 @@ fun ScreenContent(
 
         HorizontalDivider()
 
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            contentPadding = PaddingValues(bottom = 84.dp)
-        ) {
-            if (transaksiList.isEmpty()) {
+        if (transaksiList.isEmpty()) {
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Text(
+                    text = stringResource(R.string.No_transaction_data),
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
 
-                item {
-
-                    Box(
-                        modifier = Modifier.fillParentMaxSize()
-                    ) {
-
-                        Text(
-                            text = stringResource(R.string.No_transaction_data),
-                            modifier = Modifier.align(Alignment.Center)
-                        )
+        } else {
+            if (showList) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(bottom = 84.dp)
+                ) {
+                    items(transaksiList) {
+                        TransaksiItem(transaksi = it) {
+                            navController.navigate(Screen.FormUbah.withId(it.id))
+                        }
+                        HorizontalDivider()
                     }
                 }
-
-            } else {
-
-                items(transaksiList) {
-                    TransaksiItem (transaksi = it) {
-                        navController.navigate(Screen.FormUbah.withId(it.id))
+            }
+            else {
+                LazyVerticalStaggeredGrid(
+                    modifier = Modifier.fillMaxSize(),
+                    columns = StaggeredGridCells.Fixed(2),
+                    verticalItemSpacing = 8.dp,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(8.dp, 8.dp, 8.dp, 84.dp)
+                ) {
+                    items(transaksiList) {
+                        GridItem(transaksi = it) {
+                            navController.navigate(Screen.FormUbah.withId(it.id))
+                        }
                     }
-                    HorizontalDivider()
                 }
             }
         }
@@ -208,7 +251,12 @@ fun TransaksiItem(transaksi: Transaksi, onClick: () -> Unit) {
     ) {
 
         Column {
-            Text(transaksi.judul)
+            Text(
+                text = transaksi.judul,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Bold
+            )
 
             val isIncome = transaksi.tipe == "pemasukan"
 
@@ -227,9 +275,67 @@ fun TransaksiItem(transaksi: Transaksi, onClick: () -> Unit) {
             )
         }
 
-        Column {
-            Text("Rp ${transaksi.nominal}")
-            Text(transaksi.tanggal)
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = "Rp ${transaksi.nominal}",
+                fontWeight = FontWeight.SemiBold
+            )
+            Text(
+                text = transaksi.tanggal,
+                style = MaterialTheme.typography.bodySmall
+            )
+        }
+    }
+}
+
+@Composable
+fun GridItem(transaksi: Transaksi, onClick: () -> Unit) {
+    val isIncome = transaksi.tipe == "pemasukan"
+
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() },
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        ),
+        border = BorderStroke(1.dp, DividerDefaults.color)
+    ) {
+        Column(
+            modifier = Modifier.padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            Text(
+                text = transaksi.judul,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = if (isIncome)
+                    stringResource(R.string.Income)
+                else
+                    stringResource(R.string.Expense),
+                color = if (isIncome)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.error,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = "Rp ${transaksi.nominal}",
+                fontWeight = FontWeight.SemiBold
+            )
+
+            Text(
+                text = transaksi.tanggal,
+                style = MaterialTheme.typography.bodySmall
+            )
         }
     }
 }
