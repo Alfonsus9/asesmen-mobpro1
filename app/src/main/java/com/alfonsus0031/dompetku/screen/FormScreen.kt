@@ -29,6 +29,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -62,6 +63,15 @@ fun FormScreen(
     var nominal by remember { mutableStateOf("") }
     var tipe by remember { mutableStateOf("pemasukan") }
     var tanggal by remember { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
+        if (id == null) return@LaunchedEffect
+        val data = viewModel.getTransaksi(id) ?: return@LaunchedEffect
+        judul = data.judul
+        nominal = data.nominal.toString()
+        tipe = data.tipe
+        tanggal = data.tanggal
+    }
 
     var judulError by remember { mutableStateOf(false) }
     var nominalError by remember { mutableStateOf(false) }

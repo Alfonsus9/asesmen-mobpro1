@@ -86,6 +86,7 @@ fun MainScreen (navController: NavHostController) {
     ) { innerPadding ->
         ScreenContent (
             innerPadding = innerPadding,
+            navController
         )
     }
 }
@@ -93,6 +94,7 @@ fun MainScreen (navController: NavHostController) {
 @Composable
 fun ScreenContent(
     innerPadding: PaddingValues,
+    navController: NavHostController
 ) {
     val context = LocalContext.current
     val factory = ViewModelFactory(context)
@@ -185,7 +187,7 @@ fun ScreenContent(
 
                 items(transaksiList) {
                     TransaksiItem (transaksi = it) {
-
+                        navController.navigate(Screen.FormUbah.withId(it.id))
                     }
                     HorizontalDivider()
                 }
