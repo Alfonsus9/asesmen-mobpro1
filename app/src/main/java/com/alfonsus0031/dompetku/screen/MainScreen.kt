@@ -40,6 +40,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -64,6 +67,7 @@ import kotlinx.coroutines.launch
 fun MainScreen (navController: NavHostController) {
     val dataStore = SettingsDataStore(LocalContext.current)
     val showList by dataStore.layoutFlow.collectAsState(true)
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -142,7 +146,6 @@ fun ScreenContent(
     val factory = ViewModelFactory(context)
     val viewModel: MainViewModel = viewModel(factory = factory)
     val transaksiList by viewModel.data.collectAsState()
-
 
     val totalPemasukkan = transaksiList
         .filter { it.tipe == "pemasukan" }
@@ -264,6 +267,17 @@ fun TransaksiItem(
     onClick: () -> Unit,
     onDelete: () -> Unit
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        DisplayAlertDialog(
+            onDismissRequest = { showDialog = false },
+            onConfirmation = {
+                showDialog = false
+                onDelete()
+            }
+        )
+    }
 
     Row(
         modifier = Modifier
@@ -315,7 +329,7 @@ fun TransaksiItem(
         }
         IconButton(
             onClick = {
-                onDelete()
+                showDialog = true
             }
         ) {
             Icon(
@@ -334,6 +348,17 @@ fun GridItem(
     onDelete: () -> Unit
 ) {
     val isIncome = transaksi.tipe == "pemasukan"
+    var showDialog by remember { mutableStateOf(false) }
+
+    if (showDialog) {
+        DisplayAlertDialog(
+            onDismissRequest = { showDialog = false },
+            onConfirmation = {
+                showDialog = false
+                onDelete()
+            }
+        )
+    }
 
     Card(
         modifier = Modifier
@@ -360,7 +385,10 @@ fun GridItem(
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
-                IconButton(onClick = { onDelete() }) {
+                IconButton(onClick = {
+                    showDialog = true
+                }
+                ) {
                     Icon(
                         imageVector = Icons.Default.Delete,
                         contentDescription = "Delete",

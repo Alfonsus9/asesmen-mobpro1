@@ -25,4 +25,8 @@
     <string name="list">List</string>
     <string name="grid">List</string>
     <string name="Trash">Tempat sampah</string>
+
+    <string name="Delete_transaction">Apakah kamu mau menghapus transaksi ini?</string>
+    <string name="Delete">hapus</string>
+    <string name="No">Tidak</string>
 </resources>
