@@ -21,7 +21,7 @@ fun SetupNavGraph(
         startDestination = Screen.Home.route
     ) {
         composable(route = Screen.Home.route) {
-            MainScreen(navController, transaksiList = transaksiList)
+            MainScreen(navController)
         }
 
         composable(route = Screen.Form.route) {

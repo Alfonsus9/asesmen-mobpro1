@@ -2,6 +2,7 @@ package com.alfonsus0031.dompetku.screen
 
 import android.content.Context
 import android.content.Intent
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,12 +13,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -27,13 +30,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.alfonsus0031.dompetku.Model.Transaksi
 import com.alfonsus0031.dompetku.R
@@ -41,7 +44,7 @@ import com.alfonsus0031.dompetku.navigation.Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainScreen (navController: NavHostController, transaksiList: SnapshotStateList<Transaksi>) {
+fun MainScreen (navController: NavHostController) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -62,15 +65,24 @@ fun MainScreen (navController: NavHostController, transaksiList: SnapshotStateLi
                     }
                 }
             )
+        },
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    navController.navigate(Screen.Form.route)
+                },
+                containerColor = MaterialTheme.colorScheme.primary
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = stringResource(R.string.Add_Transaction),
+                )
+            }
         }
 
     ) { innerPadding ->
         ScreenContent (
             innerPadding = innerPadding,
-            transaksiList = transaksiList,
-            pindahLayar = {
-                navController.navigate(Screen.Form.route)
-            }
         )
     }
 }
@@ -78,10 +90,10 @@ fun MainScreen (navController: NavHostController, transaksiList: SnapshotStateLi
 @Composable
 fun ScreenContent(
     innerPadding: PaddingValues,
-    transaksiList: List<Transaksi>,
-    pindahLayar: () -> Unit
 ) {
 
+    val viewModel: MainViewModel = viewModel()
+    val transaksiList = viewModel.data
     val context = LocalContext.current
 
     val totalPemasukkan = transaksiList
@@ -104,7 +116,6 @@ fun ScreenContent(
         modifier = Modifier
             .padding(innerPadding)
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
 
         Column(
@@ -141,38 +152,38 @@ fun ScreenContent(
             ) {
                 Text(text = stringResource(R.string.Share))
             }
-
-            Button(
-                onClick = {
-                     pindahLayar()
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(text = stringResource(R.string.Add_Transaction))
-            }
         }
 
         HorizontalDivider()
 
-        Box(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(horizontal = 16.dp),
+            contentPadding = PaddingValues(bottom = 84.dp)
         ) {
-
             if (transaksiList.isEmpty()) {
-                Text(
-                    text = stringResource(R.string.No_transaction_data),
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            } else {
-                Column {
-                    transaksiList.forEach { transaksi ->
 
-                        TransaksiItem(transaksi)
+                item {
 
-                        HorizontalDivider()
+                    Box(
+                        modifier = Modifier.fillParentMaxSize()
+                    ) {
+
+                        Text(
+                            text = stringResource(R.string.No_transaction_data),
+                            modifier = Modifier.align(Alignment.Center)
+                        )
                     }
+                }
+
+            } else {
+
+                items(transaksiList) {
+                    TransaksiItem (transaksi = it) {
+
+                    }
+                    HorizontalDivider()
                 }
             }
         }
@@ -180,11 +191,12 @@ fun ScreenContent(
 }
 
 @Composable
-fun TransaksiItem(transaksi: Transaksi) {
+fun TransaksiItem(transaksi: Transaksi, onClick: () -> Unit) {
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {

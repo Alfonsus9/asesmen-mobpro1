@@ -200,7 +200,7 @@ fun ScreenContent(
                     return@Button
                 }
 
-                val transaksi = Transaksi(
+                    val transaksi = Transaksi(
                         judul = judul,
                         nominal = nominalValue!!,
                         tipe = tipe,
